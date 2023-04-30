@@ -1,0 +1,21 @@
+server:
+  port: 9000
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: shopping-cart
+
+management:
+  endpoint:
+    gateway:
+      enabled: true
+    health:
+      show-details: "ALWAYS"
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  security:
+    enabled: false

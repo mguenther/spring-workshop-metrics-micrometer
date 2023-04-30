@@ -1,0 +1,25 @@
+### Show all items in the shopping cart
+
+GET http://localhost:9000/cart
+Accept: application/json
+
+### Add an item to the shopping cart
+
+PUT http://localhost:9000/cart/my-product-id
+Accept: application/json
+Content-Type: application/json
+
+{
+  "productId": "my-product-id",
+  "title": "My product"
+}
+
+### Remove an item from the shopping cart by its product ID
+
+DELETE http://localhost:9000/cart/my-product-id
+Accept: application/json
+
+### Complete the order
+
+POST http://localhost:9000/cart
+Accept: application/json
