@@ -10,7 +10,7 @@ Calculate the conversion rate using this formula:
 conversion rate = number of completed orders / number of active shopping cart sessions
 ```
 
-The `ShoppingCart` class functions simply, and counts new shopping cart sessions in the following scenarios:
+The `ShoppingCart` counts new shopping cart sessions in the following scenarios:
 
 * Count as a new session when there is no prior interaction with the shopping cart and a user adds an item.
 * Count as a new session when a user adds a new item to the shopping cart after completing a previous order.
