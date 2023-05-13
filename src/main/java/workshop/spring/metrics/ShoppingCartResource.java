@@ -22,12 +22,21 @@ public class ShoppingCartResource {
 
     private final ShoppingCart cart;
 
-    private final DistributionSummary serviceTimes;
+    private final DistributionSummary serviceTimesShow;
+
+    private final DistributionSummary serviceTimesAdd;
+
+    private final DistributionSummary serviceTimesRemove;
+
+    private final DistributionSummary serviceTimesComplete;
 
     @Autowired
     public ShoppingCartResource(final ShoppingCart cart, final MeterRegistry meterRegistry) {
         this.cart = cart;
-        this.serviceTimes = meterRegistry.summary("service-times");
+        this.serviceTimesShow = meterRegistry.summary("service-times", "use-case", "show-items-in-cart");
+        this.serviceTimesAdd = meterRegistry.summary("service-times", "use-case", "put-item-in-cart");
+        this.serviceTimesRemove = meterRegistry.summary("service-times", "use-case", "remove-item-from-cart");
+        this.serviceTimesComplete = meterRegistry.summary("service-times", "use-case", "complete-order");
     }
 
     @GetMapping(path = "/cart", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +46,7 @@ public class ShoppingCartResource {
             delay();
             return ResponseEntity.ok(cart.getItems());
         } finally {
-            serviceTimes.record(timer.elapsedInMillis());
+            serviceTimesShow.record(timer.elapsedInMillis());
         }
     }
 
@@ -48,7 +57,7 @@ public class ShoppingCartResource {
             delay();
             return ResponseEntity.ok(cart.addItem(item));
         } finally {
-            serviceTimes.record(timer.elapsedInMillis());
+            serviceTimesAdd.record(timer.elapsedInMillis());
         }
     }
 
@@ -59,7 +68,7 @@ public class ShoppingCartResource {
             delay();
             return ResponseEntity.ok(cart.removeItem(productId));
         } finally {
-            serviceTimes.record(timer.elapsedInMillis());
+            serviceTimesRemove.record(timer.elapsedInMillis());
         }
     }
 
@@ -70,7 +79,7 @@ public class ShoppingCartResource {
             cart.closeOrder();
             return ResponseEntity.status(HttpStatus.OK).build();
         } finally {
-            serviceTimes.record(timer.elapsedInMillis());
+            serviceTimesComplete.record(timer.elapsedInMillis());
         }
     }
 
