@@ -1,5 +1,6 @@
 package workshop.spring.metrics;
 
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
@@ -12,6 +13,10 @@ import java.util.stream.Collectors;
 @SessionScope
 public class ShoppingCart {
 
+    private final Counter cartSessionsCounter;
+
+    private final Counter completedOrdersCounter;
+
     private List<Item> items;
 
     private boolean isNewSession;
@@ -19,11 +24,14 @@ public class ShoppingCart {
     public ShoppingCart(final MeterRegistry meterRegistry) {
         items = new ArrayList<>();
         isNewSession = true;
+        cartSessionsCounter = meterRegistry.counter("cart.sessions");
+        completedOrdersCounter = meterRegistry.counter("orders.completed");
     }
 
     public Items addItem(final Item item) {
         if (isNewSession) {
             isNewSession = false;
+            cartSessionsCounter.increment();
         }
         items.add(item);
         return new Items(items);
@@ -44,5 +52,6 @@ public class ShoppingCart {
         }
         items.clear();
         isNewSession = true;
+        completedOrdersCounter.increment();
     }
 }
